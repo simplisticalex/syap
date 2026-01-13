@@ -1,0 +1,25 @@
+{
+  "categories": [
+    { "id": 1, "title": "Мобильные телефоны", "image": "/images/iphone17.png" },
+    { "id": 2, "title": "Ноутбуки", "image": "/images/asuslaptop.png" },
+    { "id": 3, "title": "Наушники", "image": "/images/sonyheadphones.png" },
+    { "id": 4, "title": "Смарт-часы", "image": "/images/samsungwatches.png" },
+    { "id": 5, "title": "Планшеты", "image": "/images/xiaomiplansh.png" },
+    { "id": 6, "title": "Игровые консоли", "image": "/images/playstation.png" },
+    { "id": 7, "title": "Мониторы", "image": "/images/asusmonitor.png" }
+  ],
+  "products": [
+    { "id": 1, "title": "Phone X", "price": 999, "categoryId": 1, "image": "/images/iphone14.png" },
+    { "id": 2, "title": "Laptop Pro 14", "price": 1899, "categoryId": 2, "image": "/images/asusvivo.png" },
+    { "id": 3, "title": "AirSound", "price": 199, "categoryId": 3, "image": "/images/anker.png" },
+    { "id": 4, "title": "Phone Mini", "price": 699, "categoryId": 1, "image": "/images/iphone131.png" },
+    { "id": 5, "title": "Phone Pro", "price": 1199, "categoryId": 1, "image": "/images/samsungs25.png" },
+    { "id": 6, "title": "Gaming Laptop 16", "price": 2399, "categoryId": 2, "image": "/images/asustuff.png" },
+    { "id": 7, "title": "Laptop Ultra 15", "price": 1499, "categoryId": 2, "image": "/images/legion.png" },
+    { "id": 8, "title": "Noise Cancelling Headphones", "price": 349, "categoryId": 3, "image": "/images/sonyheadp1t.png" },
+    { "id": 9, "title": "Smart Watch S1", "price": 299, "categoryId": 4, "image": "/images/applwatch.png" },
+    { "id": 10, "title": "Tablet Pro 12", "price": 899, "categoryId": 5, "image": "/images/huaweitabl.png" },
+    { "id": 11, "title": "GameStation X", "price": 499, "categoryId": 6, "image": "/images/ps5.png" },
+    { "id": 12, "title": "UltraWide Monitor", "price": 399, "categoryId": 7, "image": "/images/asusmon.png" }
+  ]
+}
