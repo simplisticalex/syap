@@ -1,0 +1,72 @@
+.header {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 18px;                 
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #111;
+}
+
+.logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.title {
+  font-size: 18px;     
+  font-weight: 800;
+  color: #111;         
+  letter-spacing: 0.3px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.link,
+.active {
+  position: relative;
+  text-decoration: none;
+  color: #111;
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+.active {
+  background: #f2f2f2;
+}
+
+.badge {
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+
+  border-radius: 999px;
+  background: #111;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
