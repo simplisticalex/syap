@@ -1,16 +1,30 @@
-html, body, #root {
-  height: 100%;
+/* Сброс стилей и нормализация */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Основные стили */
 .page {
-  min-height: 100vh;              
+  min-height: 100vh;             
   display: flex;
   flex-direction: column;
-  background: #f3f3f3;           
+  background: #f3f3f3;          
 }
 
 .container {
-  flex: 1;                        
+  flex: 1;                       
   display: flex;
   flex-direction: column;
 }
@@ -24,9 +38,63 @@ html, body, #root {
   border-radius: 14px;
   padding: 16px;
 }
+
 a {
   color: inherit;
   text-decoration: none;
 }
 
+/* Адаптивная верстка */
+@media (max-width: 768px) {
+  .main {
+    width: calc(100% - 16px);
+    margin: 8px;
+    padding: 12px;
+  }
+  
+  /* Дополнительные стили для мобильных устройств */
+  html {
+    font-size: 14px;
+  }
+}
 
+@media (max-width: 480px) {
+  .main {
+    width: calc(100% - 8px);
+    margin: 4px;
+    padding: 8px;
+  }
+  
+  html {
+    font-size: 12px;
+  }
+}
+
+/* Кроссбраузерность */
+img {
+  max-width: 100%;
+  height: auto;
+  -ms-interpolation-mode: bicubic;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  background-color: transparent;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  outline: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}

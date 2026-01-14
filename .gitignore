@@ -1,4 +1,7 @@
 ```
+# Backup files
+*.backup
+
 # Dependencies
 node_modules/
 
@@ -7,44 +10,83 @@ node_modules/
 .env.local
 *.env.*
 
+# Editors
+.vscode/
+.idea/
+
 # Logs
 *.log
 
-# Editor/IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# Temp files
 *.tmp
+*.swp
+
+# Build artifacts
+dist/
+build/
+target/
 
 # Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-venv/
-.venv/
-.env
 
-# Build outputs
-dist/
-build/
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
 target/
+.gradle/
+
+# C/C++
+*.o
+*.obj
+*.so
+*.a
+*.dll
+*.exe
 *.out
 
-# OS generated files
+# Compression
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
+
+# OS
 .DS_Store
 Thumbs.db
 
-# Coverage reports
+# Testing
 coverage/
 htmlcov/
 .coverage
+*.coverage
 
-# Testing
+# Cache
+.cache/
 .mypy_cache/
 .pytest_cache/
 .nyc_output/
-istanbul_out/
 ```

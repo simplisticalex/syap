@@ -13,5 +13,10 @@ export const store = configureStore({
     filters: filtersReducer
   },
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(cartMiddleware)
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['persist/PERSIST']
+      }
+    }).concat(cartMiddleware),
+  devTools: process.env.NODE_ENV !== 'production', // Включаем Redux DevTools
 });
