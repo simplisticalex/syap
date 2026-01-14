@@ -1,4 +1,3 @@
-// Пример использования наследования для переиспользования кода
 export class BaseComponent {
   constructor(props) {
     this.props = props;
@@ -10,17 +9,14 @@ export class BaseComponent {
   }
 
   componentDidMount() {
-    // Базовая логика при монтировании
     console.log('Base component mounted');
   }
 
   componentWillUnmount() {
-    // Базовая логика при размонтировании
     console.log('Base component unmounted');
   }
 }
 
-// Пример декоратора для логирования
 export function withLogging(WrappedComponent) {
   return function EnhancedComponent(props) {
     console.log(`Rendering component: ${WrappedComponent.name}`);
@@ -29,7 +25,6 @@ export function withLogging(WrappedComponent) {
   };
 }
 
-// Пример декоратора для обработки ошибок
 export function withErrorBoundary(WrappedComponent) {
   return function ErrorBoundary(props) {
     try {
@@ -41,7 +36,6 @@ export function withErrorBoundary(WrappedComponent) {
   };
 }
 
-// Функция для создания memoized селекторов (альтернатива reselect если нужно больше)
 export const createSelector = (...functions) => {
   let lastArgs = null;
   let lastResult = null;

@@ -11,7 +11,6 @@ export default function Header() {
   const headerRef = useRef(null);
   
   useEffect(() => {
-    // Пример использования ref для доступа к DOM элементу
     if (headerRef.current) {
       console.log('Header element loaded:', headerRef.current);
     }

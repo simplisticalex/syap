@@ -5,30 +5,25 @@ const fs = require('fs');
 const PORT = 3001;
 const DB_PATH = './server/db.json';
 
-// Загрузка данных из файла
 const loadData = () => {
   const data = fs.readFileSync(DB_PATH, 'utf8');
   return JSON.parse(data);
 };
 
-// Отправка JSON ответа
 const sendJSON = (res, statusCode, data) => {
   res.writeHead(statusCode, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify(data));
 };
 
-// Отправка ошибки
 const sendError = (res, statusCode, message) => {
   sendJSON(res, statusCode, { error: message });
 };
 
-// Обработка маршрутов
 const handleRequest = (req, res) => {
   const parsedUrl = url.parse(req.url, true);
   const pathName = parsedUrl.pathname;
   const method = req.method;
 
-  // Разрешаем CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -66,7 +61,6 @@ const handleRequest = (req, res) => {
         const { products } = loadData();
         let filteredProducts = products;
 
-        // Фильтрация по categoryId если параметр передан
         if (parsedUrl.query.categoryId) {
           filteredProducts = products.filter(
             product => product.categoryId === parseInt(parsedUrl.query.categoryId)

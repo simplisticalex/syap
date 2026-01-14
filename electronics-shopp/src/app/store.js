@@ -18,5 +18,5 @@ export const store = configureStore({
         ignoredActions: ['persist/PERSIST']
       }
     }).concat(cartMiddleware),
-  devTools: process.env.NODE_ENV !== 'production', // Включаем Redux DevTools
+  devTools: process.env.NODE_ENV !== 'production', 
 });
