@@ -88,9 +88,7 @@
   background: #f6f6f6;
 }
 
-/* =========================
-   Products cards
-   ========================= */
+
 .productsGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(240px, 1fr));
