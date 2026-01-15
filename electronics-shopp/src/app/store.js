@@ -12,11 +12,9 @@ export const store = configureStore({
     categories: categoriesReducer,
     filters: filtersReducer
   },
-  middleware: getDefaultMiddleware =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: ['persist/PERSIST']
-      }
-    }).concat(cartMiddleware),
+  middleware: (getDefaultMiddleware) =>
+  getDefaultMiddleware({
+    serializableCheck: true
+  }).concat(cartMiddleware),
   devTools: process.env.NODE_ENV !== 'production', 
 });
