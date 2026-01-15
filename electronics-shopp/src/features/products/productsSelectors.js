@@ -1,42 +1,33 @@
 import { createSelector } from "reselect";
 
-const selectProducts = state => state.products.list;
-const selectFilters = state => state.filters;
-const selectCategoryId = (_, categoryId) => categoryId;
+const selectProducts = (state) => state.products.list;
+const selectFilters = (state) => state.filters;
 
-export const selectFilteredProductsByCategory = createSelector(
-  [selectProducts, selectFilters, selectCategoryId],
-  (products, filters, categoryId) => {
-    let result = products.filter(p => p.categoryId === categoryId);
+export const selectPriceSortedProducts = createSelector(
+  [selectProducts, selectFilters],
+  (products, filters) => {
+    const min = Number(filters.minPrice || 0);
+    const max = Number(filters.maxPrice || 999999);
 
-    const q = filters.search.trim().toLowerCase();
-    if (q) {
-      result = result.filter(p => p.title.toLowerCase().includes(q));
-    }
+    const result = products.filter((p) => {
+      const price = Number(p.price || 0);
+      return price >= min && price <= max;
+    });
 
-    const min = filters.minPrice === "" ? null : Number(filters.minPrice);
-    const max = filters.maxPrice === "" ? null : Number(filters.maxPrice);
-
-    if (min !== null && !Number.isNaN(min)) {
-      result = result.filter(p => p.price >= min);
-    }
-    if (max !== null && !Number.isNaN(max)) {
-      result = result.filter(p => p.price <= max);
-    }
-  
     const sorted = [...result];
+
     switch (filters.sort) {
       case "price_desc":
-        sorted.sort((a, b) => b.price - a.price);
+        sorted.sort((a, b) => Number(b.price) - Number(a.price));
         break;
       case "title_asc":
-        sorted.sort((a, b) => a.title.localeCompare(b.title));
+        sorted.sort((a, b) => String(a.title).localeCompare(String(b.title)));
         break;
       case "title_desc":
-        sorted.sort((a, b) => b.title.localeCompare(a.title));
+        sorted.sort((a, b) => String(b.title).localeCompare(String(a.title)));
         break;
       default:
-        sorted.sort((a, b) => a.price - b.price);
+        sorted.sort((a, b) => Number(a.price) - Number(b.price));
         break;
     }
 

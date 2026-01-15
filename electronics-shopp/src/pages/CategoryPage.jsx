@@ -1,91 +1,41 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../features/products/productsSlice";
 import { addToCart } from "../features/cart/cartSlice";
-
-import {
-  setSearch,
-  setMinPrice,
-  setMaxPrice,
-  setSort,
-  resetFilters
-} from "../features/filters/filtersSlice";
+import { setSearch, setMinPrice, setMaxPrice, setSort, resetFilters } from "../features/filters/filtersSlice";
+import { useDebounce } from "../hooks/useDebounce";
+import { selectPriceSortedProducts } from "../features/products/productsSelectors";
 
 import styles from "./CategoryPage.module.css";
 
 export default function CategoryPage() {
   const { id } = useParams();
   const categoryId = Number(id);
-
   const dispatch = useDispatch();
-
-  const { list: products, status, error } = useSelector(state => state.products);
+  const { status, error } = useSelector(state => state.products);
   const filters = useSelector(state => state.filters);
-
   const [categoryTitle, setCategoryTitle] = useState(`Категория #${categoryId}`);
 
   useEffect(() => {
     fetch(`http://localhost:3001/categories/${categoryId}`)
-      .then(r => (r.ok ? r.json() : null))
-      .then(data => {
-        if (data?.title) setCategoryTitle(data.title);
-      })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => data?.title && setCategoryTitle(data.title))
       .catch(() => {});
   }, [categoryId]);
 
+  const debouncedSearch = useDebounce(filters.search, 500); // Add debounce
+
   useEffect(() => {
-    if (status === "idle") dispatch(fetchProducts());
-  }, [status, dispatch]);
+    dispatch(fetchProducts({ categoryId, search: debouncedSearch })); // Update products on debounced search
+  }, [categoryId, debouncedSearch, dispatch]);
 
-  const categoryProducts = useMemo(() => {
-    return products.filter(p => Number(p.categoryId) === categoryId);
-  }, [products, categoryId]);
-
-  const filteredProducts = useMemo(() => {
-    const s = (filters.search || "").trim().toLowerCase();
-    const min = Number(filters.minPrice || 0);
-    const max = Number(filters.maxPrice || 999999);
-    const sort = filters.sort;
-
-    let arr = categoryProducts;
-
-    if (s) arr = arr.filter(p => (p.title || "").toLowerCase().includes(s));
-    arr = arr.filter(p => {
-      const price = Number(p.price || 0);
-      return price >= min && price <= max;
-    });
-
-    const copy = [...arr];
-
-    switch (sort) {
-      case "price_asc":
-        copy.sort((a, b) => Number(a.price) - Number(b.price));
-        break;
-      case "price_desc":
-        copy.sort((a, b) => Number(b.price) - Number(a.price));
-        break;
-      case "title_asc":
-        copy.sort((a, b) => String(a.title).localeCompare(String(b.title)));
-        break;
-      case "title_desc":
-        copy.sort((a, b) => String(b.title).localeCompare(String(a.title)));
-        break;
-      default:
-        break;
-    }
-
-    return copy;
-  }, [categoryProducts, filters]);
-
+const filteredProducts = useSelector(selectPriceSortedProducts);
   return (
     <div>
       <div className={styles.topRow}>
         <h2 className={styles.pageTitle}>{categoryTitle}</h2>
-
-        <Link to="/" className={styles.backLink}>
-          ← Назад
-        </Link>
+        <Link to="/" className={styles.backLink}>← Назад</Link>
       </div>
 
       <div className={styles.filters}>
@@ -135,9 +85,7 @@ export default function CategoryPage() {
           </select>
         </div>
 
-        <button className={styles.btn} onClick={() => dispatch(resetFilters())}>
-          Сбросить
-        </button>
+        <button className={styles.btn} onClick={() => dispatch(resetFilters())}>Сбросить</button>
       </div>
 
       {status === "loading" && <div>Loading...</div>}
@@ -160,13 +108,10 @@ export default function CategoryPage() {
 
                 <div className={styles.bottomRow}>
                   <div className={styles.price}>
-                    {p.price}
-                    <span className={styles.currency}>$</span>
+                    {p.price}<span className={styles.currency}>$</span>
                   </div>
 
-                  <button className={styles.addBtn} onClick={() => dispatch(addToCart(p))}>
-                    Добавить
-                  </button>
+                  <button className={styles.addBtn} onClick={() => dispatch(addToCart(p))}>Добавить</button>
                 </div>
               </div>
             </div>

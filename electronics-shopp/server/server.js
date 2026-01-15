@@ -1,17 +1,20 @@
-const http = require('http');
-const url = require('url');
-const fs = require('fs');
+const http = require("http");
+const url = require("url");
+const fs = require("fs");
 
 const PORT = 3001;
-const DB_PATH = './server/db.json';
+const DB_PATH = "./server/db.json";
 
 const loadData = () => {
-  const data = fs.readFileSync(DB_PATH, 'utf8');
+  const data = fs.readFileSync(DB_PATH, "utf8");
   return JSON.parse(data);
 };
 
 const sendJSON = (res, statusCode, data) => {
-  res.writeHead(statusCode, { 'Content-Type': 'application/json' });
+  // Важно: не используем writeHead с новым объектом заголовков,
+  // чтобы не "снести" ранее выставленные CORS-заголовки.
+  res.statusCode = statusCode;
+  res.setHeader("Content-Type", "application/json");
   res.end(JSON.stringify(data));
 };
 
@@ -24,59 +27,80 @@ const handleRequest = (req, res) => {
   const pathName = parsedUrl.pathname;
   const method = req.method;
 
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // CORS
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  if (method === 'OPTIONS') {
+  if (method === "OPTIONS") {
     res.writeHead(204);
     res.end();
     return;
   }
 
-  if (method === 'GET') {
-    if (pathName === '/categories') {
-      try {
-        const { categories } = loadData();
-        sendJSON(res, 200, categories);
-      } catch (error) {
-        sendError(res, 500, 'Failed to load categories');
-      }
-    } else if (pathName.startsWith('/categories/')) {
-      try {
-        const categoryId = parseInt(pathName.split('/')[2]);
-        const { categories } = loadData();
-        const category = categories.find(cat => cat.id === categoryId);
-        
-        if (!category) {
-          sendError(res, 404, 'Category not found');
-        } else {
-          sendJSON(res, 200, category);
-        }
-      } catch (error) {
-        sendError(res, 500, 'Failed to load category');
-      }
-    } else if (pathName === '/products') {
-      try {
-        const { products } = loadData();
-        let filteredProducts = products;
+  if (method !== "GET") {
+    sendError(res, 405, "Method not allowed");
+    return;
+  }
 
-        if (parsedUrl.query.categoryId) {
-          filteredProducts = products.filter(
-            product => product.categoryId === parseInt(parsedUrl.query.categoryId)
+  // GET /categories
+  if (pathName === "/categories") {
+    try {
+      const { categories } = loadData();
+      sendJSON(res, 200, categories);
+    } catch (error) {
+      sendError(res, 500, "Failed to load categories");
+    }
+    return;
+  }
+
+  // GET /categories/:id
+  if (pathName.startsWith("/categories/")) {
+    try {
+      const categoryId = parseInt(pathName.split("/")[2], 10);
+      const { categories } = loadData();
+      const category = categories.find((cat) => cat.id === categoryId);
+
+      if (!category) {
+        sendError(res, 404, "Category not found");
+      } else {
+        sendJSON(res, 200, category);
+      }
+    } catch (error) {
+      sendError(res, 500, "Failed to load category");
+    }
+    return;
+  }
+
+  // GET /products?categoryId=&search=
+  if (pathName === "/products") {
+    try {
+      const { products } = loadData();
+      let filteredProducts = products;
+
+      if (parsedUrl.query.categoryId) {
+        const cid = parseInt(parsedUrl.query.categoryId, 10);
+        filteredProducts = filteredProducts.filter((p) => Number(p.categoryId) === cid);
+      }
+
+      if (parsedUrl.query.search) {
+        const q = String(parsedUrl.query.search).trim().toLowerCase();
+        if (q.length > 0) {
+          filteredProducts = filteredProducts.filter((p) =>
+            String(p.title || "").toLowerCase().includes(q)
           );
         }
-
-        sendJSON(res, 200, filteredProducts);
-      } catch (error) {
-        sendError(res, 500, 'Failed to load products');
       }
-    } else {
-      sendError(res, 404, 'Route not found');
+
+      sendJSON(res, 200, filteredProducts);
+    } catch (error) {
+      sendError(res, 500, "Failed to load products");
     }
-  } else {
-    sendError(res, 405, 'Method not allowed');
+    return;
   }
+
+  // 404
+  sendError(res, 404, "Route not found");
 };
 
 const server = http.createServer(handleRequest);

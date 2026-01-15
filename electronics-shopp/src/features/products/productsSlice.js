@@ -4,9 +4,14 @@ const API_URL = "http://localhost:3001/products";
 
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
-  async (_, { rejectWithValue }) => {
+  async ({ categoryId, search } = {}, { rejectWithValue }) => {
     try {
-      const res = await fetch(API_URL);
+      const url = new URL(API_URL);
+
+      if (categoryId) url.searchParams.set("categoryId", String(categoryId));
+      if (search) url.searchParams.set("search", String(search));
+
+      const res = await fetch(url.toString());
       if (!res.ok) return rejectWithValue(`HTTP ${res.status}`);
       return await res.json();
     } catch (e) {
