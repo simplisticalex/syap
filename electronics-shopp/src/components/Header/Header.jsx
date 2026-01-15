@@ -1,9 +1,12 @@
 import { Link, NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useRef, useEffect } from "react";
+import { withLog } from "../../utils/withLog";
 import styles from "./Header.module.css";
 
-export default function Header() {
+
+function Header() {
+// eslint-disable-next-line no-console
   const cartCount = useSelector(state =>
     state.cart.items.reduce((sum, i) => sum + i.qty, 0)
   );
@@ -12,6 +15,7 @@ export default function Header() {
   
   useEffect(() => {
     if (headerRef.current) {
+      // eslint-disable-next-line no-console
       console.log('Header element loaded:', headerRef.current);
     }
   }, []);
@@ -37,3 +41,4 @@ export default function Header() {
     </header>
   );
 }
+export default withLog(Header, "Header");

@@ -6,12 +6,13 @@ import { addToCart } from "../features/cart/cartSlice";
 import { setSearch, setMinPrice, setMaxPrice, setSort, resetFilters } from "../features/filters/filtersSlice";
 import { useDebounce } from "../hooks/useDebounce";
 import { selectPriceSortedProducts } from "../features/products/productsSelectors";
-
+import { CategoryLogger } from "../utils/CategoryLogger";
 import styles from "./CategoryPage.module.css";
 
 export default function CategoryPage() {
   const { id } = useParams();
   const categoryId = Number(id);
+  const logger = new CategoryLogger();
   const dispatch = useDispatch();
   const { status, error } = useSelector(state => state.products);
   const filters = useSelector(state => state.filters);
@@ -24,13 +25,17 @@ export default function CategoryPage() {
       .catch(() => {});
   }, [categoryId]);
 
-  const debouncedSearch = useDebounce(filters.search, 500); // Add debounce
+  const debouncedSearch = useDebounce(filters.search, 500); 
 
   useEffect(() => {
-    dispatch(fetchProducts({ categoryId, search: debouncedSearch })); // Update products on debounced search
-  }, [categoryId, debouncedSearch, dispatch]);
+    logger.opened(categoryId);
+  }, [categoryId]);
 
-const filteredProducts = useSelector(selectPriceSortedProducts);
+  useEffect(() => {
+    logger.search(categoryId, debouncedSearch);
+    dispatch(fetchProducts({ categoryId, search: debouncedSearch }));
+  }, [categoryId, debouncedSearch, dispatch]);
+  const filteredProducts = useSelector(selectPriceSortedProducts);
   return (
     <div>
       <div className={styles.topRow}>
